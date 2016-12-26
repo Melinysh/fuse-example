@@ -6,7 +6,7 @@ import (
 
 	"bazil.org/fuse"
 	"bazil.org/fuse/fs"
-	"golang.org/x/net/context"
+	"golang.org/x/net/context" // need this cause bazil lib doesn't use syslib context lib
 )
 
 type Dir struct {
@@ -70,10 +70,37 @@ func (d *Dir) Create(ctx context.Context, req *fuse.CreateRequest, resp *fuse.Cr
 	return f, f, nil
 }
 
+func (d *Dir) Remove(ctx context.Context, req *fuse.RemoveRequest) error {
+	log.Println("Remove request for ", req.Name)
+	if req.Dir && d.directories != nil {
+		newDirs := []*Dir{}
+		for _, dir := range *d.directories {
+			if dir.name != req.Name {
+				newDirs = append(newDirs, dir)
+			}
+		}
+		d.directories = &newDirs
+		return nil
+	} else if !req.Dir && *d.files != nil {
+		newFiles := []*File{}
+		for _, f := range *d.files {
+			if f.name != req.Name {
+				newFiles = append(newFiles, f)
+			}
+		}
+		d.files = &newFiles
+		return nil
+	}
+	return fuse.ENOENT
+}
+
 func (d *Dir) Mkdir(ctx context.Context, req *fuse.MkdirRequest) (fs.Node, error) {
 	log.Println("Mkdir request for name", req.Name)
 	dir := &Dir{Node: Node{name: req.Name, inode: NewInode()}}
-	directories := append(*d.directories, dir)
+	directories := []*Dir{dir}
+	if d.directories != nil {
+		directories = append(*d.directories, directories...)
+	}
 	d.directories = &directories
 	return dir, nil
 
