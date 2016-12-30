@@ -69,5 +69,4 @@ func main() {
 	if err := c.MountError; err != nil {
 		log.Panicln(err)
 	}
-	return
 }
