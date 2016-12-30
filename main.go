@@ -14,14 +14,6 @@ type Node struct {
 	name  string
 }
 
-type FS struct {
-	root *Dir
-}
-
-func (f *FS) Root() (fs.Node, error) {
-	return f.root, nil
-}
-
 var inode uint64
 var Usage = func() {
 	log.Printf("Usage of %s:\n", os.Args[0])
