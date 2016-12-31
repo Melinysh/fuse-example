@@ -47,15 +47,15 @@ func main() {
 	srv := fs.New(c, nil)
 	filesys := &FS{
 		&Dir{Node: Node{name: "head", inode: NewInode()}, files: &[]*File{
-			&File{Node: Node{name: "hello", inode: NewInode()}, data: "hello world!"},
-			&File{Node: Node{name: "aybbg", inode: NewInode()}, data: "send notes"},
+			&File{Node: Node{name: "hello", inode: NewInode()}, data: []byte("hello world!")},
+			&File{Node: Node{name: "aybbg", inode: NewInode()}, data: []byte("send notes")},
 		}, directories: &[]*Dir{
 			&Dir{Node: Node{name: "left", inode: NewInode()}, files: &[]*File{
-				&File{Node: Node{name: "yo", inode: NewInode()}, data: "ayylmaooo"},
+				&File{Node: Node{name: "yo", inode: NewInode()}, data: []byte("ayylmaooo")},
 			},
 			},
 			&Dir{Node: Node{name: "right", inode: NewInode()}, files: &[]*File{
-				&File{Node: Node{name: "hey", inode: NewInode()}, data: "heeey, thats pretty good"},
+				&File{Node: Node{name: "hey", inode: NewInode()}, data: []byte("heeey, thats pretty good")},
 			},
 			},
 		},

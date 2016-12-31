@@ -11,7 +11,7 @@ import (
 
 type File struct {
 	Node
-	data string
+	data []byte
 }
 
 func (f *File) Attr(ctx context.Context, a *fuse.Attr) error {
@@ -23,7 +23,7 @@ func (f *File) Attr(ctx context.Context, a *fuse.Attr) error {
 }
 func (f *File) Read(ctx context.Context, req *fuse.ReadRequest, resp *fuse.ReadResponse) error {
 	log.Println("Requested Read on File", f.name)
-	fuseutil.HandleRead(req, resp, []byte(f.data+"\n"))
+	fuseutil.HandleRead(req, resp, f.data)
 	return nil
 }
 
@@ -35,7 +35,7 @@ func (f *File) ReadAll(ctx context.Context) ([]byte, error) {
 func (f *File) Write(ctx context.Context, req *fuse.WriteRequest, resp *fuse.WriteResponse) error {
 	log.Println("Trying to write to ", f.name, "offset", req.Offset, "dataSize:", len(req.Data), "data: ", string(req.Data))
 	resp.Size = len(req.Data)
-	f.data = string(req.Data)
+	f.data = req.Data
 	log.Println("Wrote to file", f.name)
 	return nil
 }
